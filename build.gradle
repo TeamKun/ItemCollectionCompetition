@@ -35,7 +35,7 @@ dependencies {
     compileOnly fileTree(dir: "./server/cache/", include: "patched_1.16.5.jar")
     compileOnly "com.comphenix.protocol:ProtocolLib:4.7.0"
     implementation 'dev.kotx:flylib-reloaded:0.4.1'
-    implementation 'com.github.TeamKun:ConfigLib:0.4.0'
+    implementation 'com.github.TeamKun:ConfigLib:0.4.1'
     compileOnly "xyz.haoshoku.nick:nickapi:6.3.3-SNAPSHOT"
 
 }
