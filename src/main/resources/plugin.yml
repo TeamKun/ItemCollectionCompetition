@@ -1,0 +1,4 @@
+name: ItemCollectionCompetition
+version: '${version}'
+main: net.kunmc.lab.itemcollectioncompetition.ItemCollectionCompetition
+api-version: 1.16

@@ -1,0 +1,57 @@
+plugins {
+    id 'java'
+    id "com.github.johnrengelman.shadow" version "6.1.0"
+}
+
+tasks.withType(JavaCompile) {
+    options.encoding = 'UTF-8'
+}
+
+group = 'net.kunmc.lab'
+version = '1.0'
+
+repositories {
+    mavenCentral()
+    maven {
+        name = 'papermc-repo'
+        url = 'https://papermc.io/repo/repository/maven-public/'
+    }
+    maven {
+        name = 'sonatype'
+        url = 'https://oss.sonatype.org/content/groups/public/'
+    }
+    maven {
+        url = "https://repo.dmulloy2.net/repository/public/"
+    }
+    maven {
+        name = 'public'
+        url = "https://haoshoku.xyz:1234/repository/public/"
+    }
+    maven { url 'https://jitpack.io' }
+}
+
+dependencies {
+    compileOnly 'com.destroystokyo.paper:paper-api:1.16.5-R0.1-SNAPSHOT'
+    compileOnly fileTree(dir: "./server/cache/", include: "patched_1.16.5.jar")
+    compileOnly "com.comphenix.protocol:ProtocolLib:4.7.0"
+    implementation 'dev.kotx:flylib-reloaded:0.4.1'
+    implementation 'com.github.TeamKun:ConfigLib:0.4.0'
+    compileOnly "xyz.haoshoku.nick:nickapi:6.3.3-SNAPSHOT"
+
+}
+
+shadowJar {
+    archiveFileName = "${rootProject.name}-${version}.jar"
+}
+
+tasks.build.dependsOn tasks.shadowJar
+
+task copyToServer(type: Copy) {
+    mustRunAfter build
+    from new File(buildDir.absolutePath, "libs/${rootProject.name}-${version}.jar")
+    into "./server/plugins"
+}
+
+task buildAndCopy(group: "build") {
+    dependsOn build, copyToServer
+}
