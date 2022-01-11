@@ -22,6 +22,10 @@ public class DisplayType extends StringValue {
     super(value, min, max, onSet);
   }
 
+  public DisplayTypeEnum enumValue() {
+    return DisplayTypeEnum.get(this.value());
+  }
+
   @Override
   public void appendArgument(UsageBuilder builder) {
     builder.textArgument("type", suggestionBuilder -> {
@@ -32,11 +36,27 @@ public class DisplayType extends StringValue {
   }
 
   public enum DisplayTypeEnum {
-    CURRENT,
-    REMAINING;
+    CURRENT("現在"),
+    REMAINING("残り");
+
+    public String jName;
+
+    DisplayTypeEnum(String jName) {
+      this.jName = jName;
+    }
 
     public String value() {
       return this.name().toLowerCase();
+    }
+
+    public static DisplayTypeEnum get(String value) {
+      for (DisplayTypeEnum displayTypeEnum : DisplayTypeEnum.values()) {
+        if (displayTypeEnum.value().equalsIgnoreCase(value)) {
+          return displayTypeEnum;
+        }
+      }
+
+      return CURRENT;
     }
   }
 }

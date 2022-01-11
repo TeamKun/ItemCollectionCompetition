@@ -5,14 +5,14 @@ import dev.kotx.flylib.command.CommandContext;
 import net.kunmc.lab.itemcollectioncompetition.game.GameManager;
 import org.jetbrains.annotations.NotNull;
 
-public class Start extends Command {
+public class ClearSettings extends Command {
 
-  public Start(@NotNull String name) {
+  public ClearSettings(@NotNull String name) {
     super(name);
   }
 
   @Override
   public void execute(@NotNull CommandContext ctx) {
-    GameManager.start(ctx);
+    GameManager.clearSettings(ctx);
   }
 }

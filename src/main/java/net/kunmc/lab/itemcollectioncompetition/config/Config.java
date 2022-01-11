@@ -16,11 +16,11 @@ public class Config extends BaseConfig {
   public IntegerValue targetAmount = new IntegerValue(1728);
   public TeamSetValue teams = new TeamSetValue();
   public DisplayType displayType = new DisplayType(DisplayTypeEnum.CURRENT.value());
-  public IntegerValue safetyAreaSize = new IntegerValue(16);
+  public IntegerValue safetyAreaHalfRange = new IntegerValue(8);
   public IntegerValue safetyAreaUnderRange = new IntegerValue(5);
   public BooleanValue enableSafetyArea = new BooleanValue(true);
 
   public Config(@NotNull Plugin plugin) {
-    super(plugin, "config");
+    super(plugin);
   }
 }
