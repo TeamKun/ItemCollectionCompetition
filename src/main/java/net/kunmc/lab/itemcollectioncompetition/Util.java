@@ -66,4 +66,17 @@ public class Util {
       }
     }
   }
+
+  /**
+   * プレイヤーの所属チームを取得
+   */
+  public static Team affiliatedTeam(Player player) {
+    for (Team team : Bukkit.getScoreboardManager().getMainScoreboard().getTeams()) {
+      if (team.hasEntry(player.getName())) {
+        return team;
+      }
+    }
+
+    return null;
+  }
 }
