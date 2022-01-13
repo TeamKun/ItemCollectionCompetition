@@ -29,7 +29,7 @@ public class CollectionItemStack extends BaseStatisticsItem {
     }
 
     UUID uuid = player.getUniqueId();
-    if (this.playerInfo.containsKey(uuid)) {
+    if (!this.playerInfo.containsKey(uuid)) {
       this.playerInfo.put(uuid, 0);
     }
 
@@ -37,15 +37,28 @@ public class CollectionItemStack extends BaseStatisticsItem {
   }
 
   public void put(Player player, Block block) {
-    if (block.getType().equals(this.targetMaterial)) {
+    if (!block.getType().equals(this.targetMaterial)) {
       return;
     }
     UUID uuid = player.getUniqueId();
-    if (this.playerInfo.containsKey(uuid)) {
+    if (!this.playerInfo.containsKey(uuid)) {
       this.playerInfo.put(uuid, 0);
     }
 
     this.playerInfo.put(uuid, this.playerInfo.get(uuid) + 1);
+  }
+
+  public void put(Player player, int amount, Material itemType) {
+    if (!itemType.equals(this.targetMaterial)) {
+      return;
+    }
+
+    UUID uuid = player.getUniqueId();
+    if (!this.playerInfo.containsKey(uuid)) {
+      this.playerInfo.put(uuid, 0);
+    }
+
+    this.playerInfo.put(uuid, this.playerInfo.get(uuid) + amount);
   }
 
   @Override

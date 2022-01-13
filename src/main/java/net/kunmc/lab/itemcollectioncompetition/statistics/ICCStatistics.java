@@ -5,7 +5,9 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 import net.kunmc.lab.itemcollectioncompetition.ItemCollectionCompetition;
 import net.kunmc.lab.itemcollectioncompetition.Util;
 import net.kunmc.lab.itemcollectioncompetition.config.Config;
@@ -18,6 +20,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.inventory.CraftItemEvent;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scoreboard.Team;
 
@@ -26,6 +29,7 @@ public class ICCStatistics implements Listener {
   List<StatisticsItem> items = new ArrayList<>();
 
   public ICCStatistics() {
+    Bukkit.getPluginManager().registerEvents(this, ItemCollectionCompetition.plugin);
     items.add(new KillCount());
     Config config = ItemCollectionCompetition.config;
 
@@ -71,9 +75,6 @@ public class ICCStatistics implements Listener {
   @EventHandler(ignoreCancelled = true)
   public void onBlockBreak(BlockBreakEvent event) {
     Player player = event.getPlayer();
-    if (player == null) {
-      return;
-    }
 
     List<StatisticsItem> blockBreakItemList = getItems(ItemType.BLOCK_BREAK);
     for (StatisticsItem item : blockBreakItemList) {
@@ -90,15 +91,43 @@ public class ICCStatistics implements Listener {
     if (!(entity instanceof Player)) {
       return;
     }
-
     Player player = (Player) entity;
     ItemStack resultItemStack = event.getRecipe().getResult();
+
+    int craftResultAmount = 0;
+
+    // シフトクリック時
+    if (event.isShiftClick()) {
+      // クラフト結果の個数を取得
+      craftResultAmount = Arrays.stream(event.getInventory().getMatrix())
+          .filter(Objects::nonNull)
+          .map(ItemStack::getAmount)
+          .min(Integer::compare)
+          .get() * resultItemStack.getAmount();
+
+      Util.log("L108" + craftResultAmount);
+
+      // プレイヤーのインベントリに空きがない場合
+      int space = getSpaceSize(resultItemStack, player);
+      Util.log("space" + space);
+      if (space == 0) {
+        return;
+      }
+
+      // 空きスペースよりもクラフトアイテム数が多かった場合
+      if (space < craftResultAmount) {
+        craftResultAmount = space;
+        Util.log("L119" + craftResultAmount);
+      }
+    } else {
+      craftResultAmount = resultItemStack.getAmount();
+    }
 
     List<StatisticsItem> blockBreakItemList = getItems(ItemType.CRAFT);
     for (StatisticsItem item : blockBreakItemList) {
       if (item instanceof CollectionItemStack) {
         CollectionItemStack craftItem = (CollectionItemStack) item;
-        craftItem.put(player, (List<ItemStack>) resultItemStack);
+        craftItem.put(player, craftResultAmount, resultItemStack.getType());
       }
     }
   }
@@ -157,5 +186,25 @@ public class ICCStatistics implements Listener {
     } finally {
       printWriter.close();
     }
+  }
+
+  // クラフトしたアイテムがインベントリに入る最大量の計算
+  private int getSpaceSize(ItemStack target, Player player) {
+    int size = 0;
+    Inventory inventory = player.getInventory();
+
+    for (int i = 0; i < 35; i++) {
+      ItemStack stack = inventory.getItem(i);
+      if (stack == null) {
+        size += target.getMaxStackSize();
+        continue;
+      }
+
+      if (stack.getType() == target.getType()) {
+        size += target.getMaxStackSize() - stack.getAmount();
+        continue;
+      }
+    }
+    return size;
   }
 }
