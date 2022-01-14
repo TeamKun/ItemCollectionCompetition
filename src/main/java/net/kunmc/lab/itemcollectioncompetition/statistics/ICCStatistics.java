@@ -146,13 +146,7 @@ public class ICCStatistics implements Listener {
     PrintWriter printWriter = null;
     try {
       //CSVデータファイル
-      File csv;
-      String osName = System.getProperty("os.name");
-      if (osName.contains("Windows")) {
-        csv = new File(ItemCollectionCompetition.plugin.getDataFolder() + "\\statistics.csv");
-      } else {
-        csv = new File(ItemCollectionCompetition.plugin.getDataFolder() + "/statistics.csv");
-      }
+      File csv = new File(ItemCollectionCompetition.plugin.getDataFolder(), "statistics.csv");
 
       printWriter = new PrintWriter(csv);
       // ヘッダー
