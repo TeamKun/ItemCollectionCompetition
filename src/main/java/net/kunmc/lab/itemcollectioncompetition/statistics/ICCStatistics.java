@@ -1,8 +1,7 @@
 package net.kunmc.lab.itemcollectioncompetition.statistics;
 
-import java.io.BufferedWriter;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -146,9 +145,16 @@ public class ICCStatistics implements Listener {
   public void outputCSV() {
     PrintWriter printWriter = null;
     try {
-      FileWriter fileWriter = new FileWriter("Statistics.csv", false);
-      printWriter = new PrintWriter(new BufferedWriter(fileWriter));
+      //CSVデータファイル
+      File csv;
+      String osName = System.getProperty("os.name");
+      if (osName.contains("Windows")) {
+        csv = new File(ItemCollectionCompetition.plugin.getDataFolder() + "\\statistics.csv");
+      } else {
+        csv = new File(ItemCollectionCompetition.plugin.getDataFolder() + "/statistics.csv");
+      }
 
+      printWriter = new PrintWriter(csv);
       // ヘッダー
       printWriter.print("team");
       printWriter.print(",");
@@ -181,7 +187,7 @@ public class ICCStatistics implements Listener {
         }
         printWriter.println();
       }
-    } catch (IOException e) {
+    } catch (FileNotFoundException e) {
       e.printStackTrace();
     } finally {
       printWriter.close();

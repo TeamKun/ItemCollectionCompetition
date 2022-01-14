@@ -12,16 +12,20 @@ public class SetChest extends Command {
   public SetChest(@NotNull String name) {
     super(name);
     usage(usageBuilder -> {
-      usageBuilder.textArgument("team", suggestionBuilder -> {
+      usageBuilder.stringArgument("team", suggestionBuilder -> {
         for (Team team : ItemCollectionCompetition.config.teams) {
           suggestionBuilder.suggest(team.getName());
         }
-      });
+      }, null);
     });
   }
 
   @Override
   public void execute(@NotNull CommandContext ctx) {
+    if (ctx.getArgs().size() == 0) {
+      ctx.sendHelp();
+      return;
+    }
     GameManager.setDeliveryChest(ctx);
   }
 }

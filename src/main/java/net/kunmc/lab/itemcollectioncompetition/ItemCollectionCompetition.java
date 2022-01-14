@@ -17,7 +17,7 @@ public final class ItemCollectionCompetition extends JavaPlugin {
     plugin = this;
 
     config = new Config(this);
-    config.saveConfig();
+    config.saveConfigIfAbsent();
     config.loadConfig();
 
     FlyLib.create(this, builder -> {

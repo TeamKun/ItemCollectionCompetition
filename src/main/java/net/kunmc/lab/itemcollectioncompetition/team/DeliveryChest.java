@@ -1,10 +1,12 @@
 package net.kunmc.lab.itemcollectioncompetition.team;
 
 import com.destroystokyo.paper.event.block.BlockDestroyEvent;
+import net.kunmc.lab.configlib.value.IntegerValue;
 import net.kunmc.lab.itemcollectioncompetition.ItemCollectionCompetition;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.block.Chest;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
@@ -18,12 +20,29 @@ public class DeliveryChest extends BukkitRunnable implements Listener {
 
   private final Chest chest;
   private int currentAmount;
+  private SafetyBorder safetyBorder;
 
   public DeliveryChest(Chest chest) {
+    IntegerValue safetyAreaHalfRange = ItemCollectionCompetition.config.safetyAreaHalfRange;
+    IntegerValue safetyAreaUnderRange = ItemCollectionCompetition.config.safetyAreaUnderRange;
+
     this.chest = chest;
     Plugin plugin = ItemCollectionCompetition.plugin;
     Bukkit.getPluginManager().registerEvents(this, plugin);
     this.runTaskTimerAsynchronously(plugin, 0, 1);
+    this.safetyBorder = new SafetyBorder(chest.getLocation(),
+        safetyAreaHalfRange.value(),
+        safetyAreaUnderRange.value());
+
+    safetyAreaHalfRange.onSet((value, commandContext) -> {
+      this.safetyBorder = new SafetyBorder(this.chest.getLocation(), value,
+          ItemCollectionCompetition.config.safetyAreaUnderRange.value());
+    });
+
+    safetyAreaUnderRange.onSet((value, commandContext) -> {
+      this.safetyBorder = new SafetyBorder(this.chest.getLocation(),
+          ItemCollectionCompetition.config.safetyAreaHalfRange.value(), value);
+    });
   }
 
   public int currentAmount() {
@@ -53,6 +72,10 @@ public class DeliveryChest extends BukkitRunnable implements Listener {
     return false;
   }
 
+  public void spawnSafeBorderParticle(Player player) {
+    this.safetyBorder.spawnParticle(player);
+  }
+
   public Location location() {
     return this.chest.getLocation();
   }
@@ -75,7 +98,6 @@ public class DeliveryChest extends BukkitRunnable implements Listener {
       }
     }
     this.currentAmount = amount;
-
   }
 
   @EventHandler(ignoreCancelled = true)
@@ -98,4 +120,5 @@ public class DeliveryChest extends BukkitRunnable implements Listener {
       event.setCancelled(true);
     }
   }
+  
 }

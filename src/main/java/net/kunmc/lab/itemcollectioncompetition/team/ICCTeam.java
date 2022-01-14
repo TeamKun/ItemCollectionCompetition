@@ -9,7 +9,9 @@ import org.bukkit.block.Chest;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
+import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scoreboard.Team;
 import org.bukkit.util.Vector;
 
@@ -86,9 +88,26 @@ public class ICCTeam implements Listener {
     if (playerLocation.getBlockY() >= center.getBlockY()) {
       center.setY(playerLocation.getY());
     }
-    Vector velocity = playerLocation.subtract(center).toVector().normalize();
+
+    if (player.getVehicle() != null) {
+      new BukkitRunnable() {
+        @Override
+        public void run() {
+          player.leaveVehicle();
+        }
+      }.runTask(ItemCollectionCompetition.plugin);
+    }
+
+    double velocityRate = 0.1;
+
+    if (player.isGliding()) {
+      velocityRate = 1;
+    }
+
+    Vector velocity = playerLocation.subtract(center).toVector().normalize().multiply(velocityRate);
     player.setVelocity(player.getVelocity().add(velocity));
 
+    this.deliveryChest.spawnSafeBorderParticle(player);
   }
 
   @EventHandler(ignoreCancelled = true)
@@ -102,5 +121,24 @@ public class ICCTeam implements Listener {
     }
 
     event.setRespawnLocation(this.respawnPoint);
+  }
+
+  @EventHandler(ignoreCancelled = true)
+  public void onEntityDamage(EntityDamageEvent event) {
+    if (!(event.getEntity() instanceof Player)) {
+      return;
+    }
+    Player player = (Player) event.getEntity();
+
+    if (!this.team.hasEntry(player.getName())) {
+      return;
+    }
+
+    // セーフティエリアの中か
+    if (!this.deliveryChest.isInSafeArea(player.getLocation())) {
+      return;
+    }
+
+    event.setCancelled(true);
   }
 }
