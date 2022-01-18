@@ -109,11 +109,8 @@ public class ICCStatistics implements Listener {
           .min(Integer::compare)
           .get() * resultItemStack.getAmount();
 
-      Util.log("L108" + craftResultAmount);
-
       // プレイヤーのインベントリに空きがない場合
       int space = getSpaceSize(resultItemStack, player);
-      Util.log("space" + space);
       if (space == 0) {
         return;
       }
@@ -121,7 +118,6 @@ public class ICCStatistics implements Listener {
       // 空きスペースよりもクラフトアイテム数が多かった場合
       if (space < craftResultAmount) {
         craftResultAmount = space;
-        Util.log("L119" + craftResultAmount);
       }
     } else {
       craftResultAmount = resultItemStack.getAmount();

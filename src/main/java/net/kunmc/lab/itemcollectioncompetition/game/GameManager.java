@@ -8,10 +8,12 @@ import net.kunmc.lab.itemcollectioncompetition.statistics.ICCStatistics;
 import net.kunmc.lab.itemcollectioncompetition.team.ICCTeam;
 import net.kunmc.lab.itemcollectioncompetition.team.ICCTeamList;
 import net.kyori.adventure.text.Component;
+import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
 import org.bukkit.block.Chest;
 import org.bukkit.entity.Player;
 import org.bukkit.scoreboard.Team;
+import org.bukkit.util.RayTraceResult;
 
 public class GameManager {
 
@@ -61,14 +63,33 @@ public class GameManager {
       return;
     }
 
-    // 視線の再起のチェストを取得
-    BlockState blockState = ctx.getPlayer().rayTraceBlocks(64).getHitBlock().getState();
-    if (!(blockState instanceof Chest)) {
+    // 視線の先のチェストを取得
+    BlockState blockState = getChestFromRayTrace(ctx.getPlayer().rayTraceBlocks(16));
+    if (blockState == null) {
       new CommandResult("視線にチェストを入れてコマンドを入力してください", false, ctx).sendFeedback();
       return;
     }
 
     iccTeamList.setDeliveryChest(team, (Chest) blockState, ctx);
+  }
+
+  private static BlockState getChestFromRayTrace(RayTraceResult rayTraceResult) {
+    if (rayTraceResult == null) {
+      return null;
+    }
+
+    Block target = rayTraceResult.getHitBlock();
+
+    if (target == null) {
+      return null;
+    }
+
+    BlockState blockState = target.getState();
+    if (!(blockState instanceof Chest)) {
+      return null;
+    }
+
+    return blockState;
   }
 
   public static void setRespawn(CommandContext ctx) {

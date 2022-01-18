@@ -3,7 +3,6 @@ package net.kunmc.lab.itemcollectioncompetition.team;
 import java.util.ArrayList;
 import java.util.List;
 import net.kunmc.lab.itemcollectioncompetition.ItemCollectionCompetition;
-import net.kunmc.lab.itemcollectioncompetition.Util;
 import org.bukkit.Location;
 import org.bukkit.Particle;
 import org.bukkit.World;
@@ -39,8 +38,6 @@ public class SafetyBorder {
         this.locationList.add(new Location(center.getWorld(), x, y, z));
       }
     }
-
-    Util.log(String.valueOf(this.locationList.size()));
   }
 
   public void spawnParticle(Player player) {
