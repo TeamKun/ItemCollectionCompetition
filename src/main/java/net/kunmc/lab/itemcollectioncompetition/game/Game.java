@@ -4,11 +4,10 @@ import net.kunmc.lab.itemcollectioncompetition.ItemCollectionCompetition;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.entity.Player;
-import org.bukkit.event.Listener;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.scheduler.BukkitRunnable;
 
-public class Game extends BukkitRunnable implements Listener {
+public class Game extends BukkitRunnable {
 
   public Game() {
     Plugin plugin = ItemCollectionCompetition.plugin;

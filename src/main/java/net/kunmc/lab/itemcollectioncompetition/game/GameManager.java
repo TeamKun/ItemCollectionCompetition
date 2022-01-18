@@ -20,13 +20,16 @@ public class GameManager {
   private static ICCStatistics statistics;
 
   public static void start(CommandContext ctx) {
+    if (game != null) {
+      new CommandResult("ゲームが実行中です", false, ctx).sendFeedback();
+      return;
+    }
     List<String> incompleteTeamList = iccTeamList.incompleteSettingList();
     if (incompleteTeamList.size() == 0) {
-
+      iccTeamList.clearDeliveryChestInventory();
       game = new Game();
       statistics = new ICCStatistics();
-      iccTeamList.clearDeliveryChestInventory();
-      Util.sendTitleAll("ゲーム開始", null, 20, 100, 20);
+      Util.sendTitleAll("ゲーム開始", null, 20, 60, 20);
       new CommandResult("ゲームを開始します", true, ctx).sendFeedback();
       return;
     }

@@ -1,5 +1,6 @@
 package net.kunmc.lab.itemcollectioncompetition.team;
 
+import java.util.Objects;
 import net.kunmc.lab.itemcollectioncompetition.ItemCollectionCompetition;
 import net.kunmc.lab.itemcollectioncompetition.config.DisplayType.DisplayTypeEnum;
 import net.kyori.adventure.text.Component;
@@ -10,6 +11,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.event.inventory.InventoryOpenEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scoreboard.Team;
@@ -140,5 +142,23 @@ public class ICCTeam implements Listener {
     }
 
     event.setCancelled(true);
+  }
+
+  @EventHandler(ignoreCancelled = true)
+  public void onInventoryOpen(InventoryOpenEvent event) {
+    if (!(event.getPlayer() instanceof Player)) {
+      return;
+    }
+    Player player = (Player) event.getPlayer();
+
+    if (this.team.hasEntry(player.getName())) {
+      return;
+    }
+
+    Location targetLocation = Objects.requireNonNull(
+        Objects.requireNonNull(event.getPlayer().rayTraceBlocks(10)).getHitBlock()).getLocation();
+    if (this.deliveryChest.location().equals(targetLocation)) {
+      event.setCancelled(true);
+    }
   }
 }

@@ -18,6 +18,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
+import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.inventory.CraftItemEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
@@ -88,6 +89,10 @@ public class ICCStatistics implements Listener {
   public void onCraftItem(CraftItemEvent event) {
     HumanEntity entity = event.getWhoClicked();
     if (!(entity instanceof Player)) {
+      return;
+    }
+
+    if (event.getClick() == ClickType.MIDDLE) {
       return;
     }
     Player player = (Player) entity;
