@@ -1,6 +1,5 @@
 package net.kunmc.lab.itemcollectioncompetition.team;
 
-import java.util.Objects;
 import net.kunmc.lab.itemcollectioncompetition.ItemCollectionCompetition;
 import net.kunmc.lab.itemcollectioncompetition.config.DisplayType.DisplayTypeEnum;
 import net.kyori.adventure.text.Component;
@@ -155,8 +154,7 @@ public class ICCTeam implements Listener {
       return;
     }
 
-    Location targetLocation = Objects.requireNonNull(
-        Objects.requireNonNull(event.getPlayer().rayTraceBlocks(10)).getHitBlock()).getLocation();
+    Location targetLocation = event.getInventory().getLocation();
     if (this.deliveryChest.location().equals(targetLocation)) {
       event.setCancelled(true);
     }

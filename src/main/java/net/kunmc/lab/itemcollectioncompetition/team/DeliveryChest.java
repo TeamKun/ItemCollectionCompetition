@@ -25,7 +25,7 @@ public class DeliveryChest extends BukkitRunnable implements Listener {
   public DeliveryChest(Chest chest) {
     IntegerValue safetyAreaHalfRange = ItemCollectionCompetition.config.safetyAreaHalfRange;
     IntegerValue safetyAreaUnderRange = ItemCollectionCompetition.config.safetyAreaUnderRange;
-
+    
     this.chest = chest;
     Plugin plugin = ItemCollectionCompetition.plugin;
     Bukkit.getPluginManager().registerEvents(this, plugin);

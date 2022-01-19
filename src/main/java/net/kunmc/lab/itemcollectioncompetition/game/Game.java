@@ -11,14 +11,14 @@ public class Game extends BukkitRunnable {
 
   public Game() {
     Plugin plugin = ItemCollectionCompetition.plugin;
-    this.runTaskTimerAsynchronously(plugin, 0, 1);
+    this.runTaskTimerAsynchronously(plugin, 10, 1);
   }
 
   @Override
   public void run() {
     // 情報表示
     sendInfo();
-
+    
     // セーフティエリアからプレイヤーをはじく処理
     if (ItemCollectionCompetition.config.enableSafetyArea.value()) {
       for (Player player : Bukkit.getOnlinePlayers()) {
