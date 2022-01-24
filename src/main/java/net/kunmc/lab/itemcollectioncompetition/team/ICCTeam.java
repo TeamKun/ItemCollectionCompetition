@@ -145,6 +145,9 @@ public class ICCTeam implements Listener {
 
   @EventHandler(ignoreCancelled = true)
   public void onInventoryOpen(InventoryOpenEvent event) {
+    if (!ItemCollectionCompetition.config.enableSafetyArea.value()) {
+      return;
+    }
     if (!(event.getPlayer() instanceof Player)) {
       return;
     }
