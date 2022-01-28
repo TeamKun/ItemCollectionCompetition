@@ -9,6 +9,8 @@ import org.bukkit.block.Chest;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.block.BlockCanBuildEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.inventory.InventoryOpenEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
@@ -141,6 +143,44 @@ public class ICCTeam implements Listener {
     }
 
     event.setCancelled(true);
+  }
+
+  @EventHandler(ignoreCancelled = true)
+  public void onBlockBreak(BlockBreakEvent event) {
+    if (!ItemCollectionCompetition.config.enableSafetyArea.value()) {
+      return;
+    }
+    Player player = event.getPlayer();
+
+    if (this.team.hasEntry(player.getName())) {
+      return;
+    }
+
+    // セーフティエリアの中か
+    if (!this.deliveryChest.isInSafeArea(event.getBlock().getLocation())) {
+      return;
+    }
+
+    event.setCancelled(true);
+  }
+
+  @EventHandler(ignoreCancelled = true)
+  public void onBlockCanBuild(BlockCanBuildEvent event) {
+    if (!ItemCollectionCompetition.config.enableSafetyArea.value()) {
+      return;
+    }
+    Player player = event.getPlayer();
+
+    if (this.team.hasEntry(player.getName())) {
+      return;
+    }
+
+    // セーフティエリアの中か
+    if (!this.deliveryChest.isInSafeArea(event.getBlock().getLocation())) {
+      return;
+    }
+
+    event.setBuildable(false);
   }
 
   @EventHandler(ignoreCancelled = true)
