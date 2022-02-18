@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Set;
 import net.kunmc.lab.itemcollectioncompetition.ItemCollectionCompetition;
 import net.kunmc.lab.itemcollectioncompetition.command.CommandResult;
+import net.kunmc.lab.itemcollectioncompetition.config.DisplayType.DisplayTypeEnum;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Location;
 import org.bukkit.block.Chest;
@@ -73,13 +74,13 @@ public class ICCTeamList {
     return incompleteTeamNameList;
   }
 
-  public Component currentAmountInfo() {
+  public Component currentAmountInfo(DisplayTypeEnum displayTypeEnum) {
     Component component = Component.text(
-        ItemCollectionCompetition.config.displayType.enumValue().jName + " ");
+        displayTypeEnum.jName + " ");
 
     for (ICCTeam iccTeam : this.iccTeamList) {
       component = component.append(Component.text(iccTeam.name())).append(Component.text(":"))
-          .append(iccTeam.displayAmount()).append(Component.text(" "));
+          .append(iccTeam.displayAmount(displayTypeEnum)).append(Component.text(" "));
     }
 
     return component;
@@ -98,6 +99,22 @@ public class ICCTeamList {
       }
     }
     return null;
+  }
+
+  public ICCTeam getTopTeam() {
+    ICCTeam topTeam = null;
+
+    for (ICCTeam iccTeam : this.iccTeamList) {
+      if (topTeam == null) {
+        topTeam = iccTeam;
+      }
+
+      if (iccTeam.currentAmount() > topTeam.currentAmount()) {
+        topTeam = iccTeam;
+      }
+    }
+
+    return topTeam;
   }
 
   public void clearDeliveryChestInventory() {

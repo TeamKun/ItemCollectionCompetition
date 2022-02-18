@@ -4,14 +4,10 @@ import dev.kotx.flylib.command.CommandContext;
 import java.util.List;
 import net.kunmc.lab.itemcollectioncompetition.Util;
 import net.kunmc.lab.itemcollectioncompetition.command.CommandResult;
-import net.kunmc.lab.itemcollectioncompetition.statistics.ICCStatistics;
-import net.kunmc.lab.itemcollectioncompetition.team.ICCTeam;
 import net.kunmc.lab.itemcollectioncompetition.team.ICCTeamList;
-import net.kyori.adventure.text.Component;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
 import org.bukkit.block.Chest;
-import org.bukkit.entity.Player;
 import org.bukkit.scoreboard.Team;
 import org.bukkit.util.RayTraceResult;
 
@@ -19,19 +15,17 @@ public class GameManager {
 
   private static Game game;
   private static final ICCTeamList iccTeamList = new ICCTeamList();
-  private static ICCStatistics statistics;
 
   public static void start(CommandContext ctx) {
-    if (game != null) {
+    if (isGameRunning()) {
       new CommandResult("ゲームが実行中です", false, ctx).sendFeedback();
       return;
     }
     List<String> incompleteTeamList = iccTeamList.incompleteSettingList();
     if (incompleteTeamList.size() == 0) {
       iccTeamList.clearDeliveryChestInventory();
-      game = new Game();
-      statistics = new ICCStatistics();
       Util.sendTitleAll("ゲーム開始", null, 20, 60, 20);
+      game = GameBuilder.build(iccTeamList);
       new CommandResult("ゲームを開始します", true, ctx).sendFeedback();
       return;
     }
@@ -45,7 +39,7 @@ public class GameManager {
   }
 
   public static void stop(CommandContext ctx) {
-    if (game == null) {
+    if (!isGameRunning()) {
       new CommandResult("ゲーム実行中ではありません", false, ctx).sendFeedback();
       return;
     }
@@ -55,6 +49,15 @@ public class GameManager {
     new CommandResult("ゲームを強制終了しました", true, ctx).sendFeedback();
     return;
   }
+
+  private static boolean isGameRunning() {
+    if (game == null) {
+      return false;
+    }
+
+    return game.isRunning();
+  }
+
 
   public static void setDeliveryChest(CommandContext ctx) {
     Team team = Util.getTeam(ctx.getArgs().get(0));
@@ -105,25 +108,5 @@ public class GameManager {
   public static void clearSettings(CommandContext ctx) {
     iccTeamList.clearSettings();
     ctx.success("各位チームの設定をクリアしました");
-  }
-
-  static Component currentAmountInfo() {
-    return iccTeamList.currentAmountInfo();
-  }
-
-  public static void executeSafetyArea(Player player) {
-    iccTeamList.executeSafetyArea(player);
-  }
-
-  public static void judgeVictory() {
-    ICCTeam team = iccTeamList.getVictoryTeam();
-    if (team == null) {
-      return;
-    }
-
-    Util.sendTitleAll(team.name() + "の勝利!", "", 20, 60, 20);
-    game.cancel();
-    statistics.outputCSV();
-    game = null;
   }
 }

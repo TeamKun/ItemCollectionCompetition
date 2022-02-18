@@ -33,10 +33,14 @@ public class ICCTeam implements Listener {
     return this.team.getName();
   }
 
-  public Component displayAmount() {
-    int current = this.deliveryChest.currentAmount();
+  public int currentAmount() {
+    return this.deliveryChest.currentAmount();
+  }
 
-    if (ItemCollectionCompetition.config.displayType.enumValue().equals(DisplayTypeEnum.CURRENT)) {
+  public Component displayAmount(DisplayTypeEnum displayTypeEnum) {
+    int current = this.currentAmount();
+
+    if (displayTypeEnum.equals(DisplayTypeEnum.CURRENT)) {
       return Component.text(current);
     }
 

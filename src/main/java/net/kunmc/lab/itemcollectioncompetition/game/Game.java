@@ -1,43 +1,61 @@
 package net.kunmc.lab.itemcollectioncompetition.game;
 
 import net.kunmc.lab.itemcollectioncompetition.ItemCollectionCompetition;
+import net.kunmc.lab.itemcollectioncompetition.statistics.ICCStatistics;
+import net.kunmc.lab.itemcollectioncompetition.team.ICCTeamList;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.scheduler.BukkitRunnable;
 
-public class Game extends BukkitRunnable {
+public abstract class Game extends BukkitRunnable {
 
-  public Game() {
+  protected final ICCTeamList iccTeamList;
+  private final ICCStatistics statistics = new ICCStatistics();
+  boolean isRunning = true;
+
+  public Game(ICCTeamList iccTeamList) {
+    this.iccTeamList = iccTeamList;
     Plugin plugin = ItemCollectionCompetition.plugin;
     this.runTaskTimerAsynchronously(plugin, 10, 1);
   }
 
-  @Override
-  public void run() {
-    // 情報表示
-    sendInfo();
-    
-    // セーフティエリアからプレイヤーをはじく処理
-    if (ItemCollectionCompetition.config.enableSafetyArea.value()) {
-      for (Player player : Bukkit.getOnlinePlayers()) {
-        GameMode gamemode = player.getGameMode();
-        if (gamemode.equals(GameMode.CREATIVE) || gamemode.equals(GameMode.SPECTATOR)) {
-          continue;
-        }
-        GameManager.executeSafetyArea(player);
-      }
+  /**
+   * セーフティエリアからプレイヤーをはじく処理
+   */
+  protected void executeSafetyArea() {
+    if (!ItemCollectionCompetition.config.enableSafetyArea.value()) {
+      return;
     }
 
-    // 勝敗判定
-    GameManager.judgeVictory();
+    for (Player player : Bukkit.getOnlinePlayers()) {
+      GameMode gamemode = player.getGameMode();
+      if (gamemode.equals(GameMode.CREATIVE) || gamemode.equals(GameMode.SPECTATOR)) {
+        continue;
+      }
+
+      this.iccTeamList.executeSafetyArea(player);
+    }
+
   }
 
-  private void sendInfo() {
-    for (Player player : Bukkit.getOnlinePlayers()) {
 
-      player.sendActionBar(GameManager.currentAmountInfo());
+  protected void sendInfo() {
+    for (Player player : Bukkit.getOnlinePlayers()) {
+      player.sendActionBar(
+          this.iccTeamList.currentAmountInfo(
+              ItemCollectionCompetition.config.displayType.enumValue()));
     }
+  }
+
+  boolean isRunning() {
+    return this.isRunning;
+  }
+
+  void stop() {
+    this.cancel();
+    this.isRunning = false;
+    statistics.outputCSV();
   }
 }
