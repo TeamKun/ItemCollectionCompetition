@@ -50,6 +50,50 @@ public class GameManager {
     return;
   }
 
+  public static void Pause(CommandContext ctx) {
+    if (!isGameRunning()) {
+      new CommandResult("ゲーム実行中ではありません", false, ctx).sendFeedback();
+      return;
+    }
+
+    if (!(game instanceof TimeAttackMode)) {
+      new CommandResult("このコマンドはタイムアタックモード実行時にのみ利用できます", false, ctx).sendFeedback();
+      return;
+    }
+
+    TimeAttackMode timeAttackMode = (TimeAttackMode) game;
+
+    if (timeAttackMode.isPausing) {
+      new CommandResult("一時停止中です", false, ctx).sendFeedback();
+      return;
+    }
+
+    timeAttackMode.pause();
+    new CommandResult("一時停止します", true, ctx).sendFeedback();
+  }
+
+  public static void Restart(CommandContext ctx) {
+    if (!isGameRunning()) {
+      new CommandResult("ゲーム実行中ではありません", false, ctx).sendFeedback();
+      return;
+    }
+
+    if (!(game instanceof TimeAttackMode)) {
+      new CommandResult("このコマンドはタイムアタックモード実行時にのみ利用できます", false, ctx).sendFeedback();
+      return;
+    }
+
+    TimeAttackMode timeAttackMode = (TimeAttackMode) game;
+
+    if (!timeAttackMode.isPausing) {
+      new CommandResult("一時停止中ではありません", false, ctx).sendFeedback();
+      return;
+    }
+
+    timeAttackMode.restart();
+    new CommandResult("再開します", true, ctx).sendFeedback();
+  }
+
   private static boolean isGameRunning() {
     if (game == null) {
       return false;

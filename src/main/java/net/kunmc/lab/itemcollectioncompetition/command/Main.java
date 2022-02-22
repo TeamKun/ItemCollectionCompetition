@@ -13,6 +13,8 @@ public class Main extends Command {
         new SetChest("setChest"),
         new SetRespawn("setRespawn"),
         new ClearSettings("clearSettings"),
+        new Pause("pause"),
+        new Restart("restart"),
         configCommand);
   }
 }

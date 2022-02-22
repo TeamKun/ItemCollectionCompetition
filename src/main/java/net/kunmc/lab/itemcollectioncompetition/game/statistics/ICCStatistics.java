@@ -1,4 +1,4 @@
-package net.kunmc.lab.itemcollectioncompetition.statistics;
+package net.kunmc.lab.itemcollectioncompetition.game.statistics;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -31,6 +31,7 @@ public class ICCStatistics implements Listener {
   public ICCStatistics() {
     Bukkit.getPluginManager().registerEvents(this, ItemCollectionCompetition.plugin);
     items.add(new KillCount());
+    items.add(new DeathCount());
     Config config = ItemCollectionCompetition.config;
 
     // 採掘
@@ -43,14 +44,21 @@ public class ICCStatistics implements Listener {
       items.add(new CollectionItemStack(ItemType.CRAFT, material));
     }
 
-    // 強奪
+    // 強奪した
     for (Material material : config.robberyTargetMaterials.value()) {
       items.add(new CollectionItemStack(ItemType.ROBBERY, material));
+    }
+
+    // 強奪された
+    for (Material material : config.robbedTargetMaterials.value()) {
+      items.add(new CollectionItemStack(ItemType.ROBBED, material));
     }
   }
 
   @EventHandler(ignoreCancelled = true)
   public void onPlayerDeath(PlayerDeathEvent event) {
+
+    // キルカウント
     Player killer = event.getEntity().getKiller();
 
     if (killer == null) {
@@ -61,13 +69,27 @@ public class ICCStatistics implements Listener {
     KillCount killCount = (KillCount) getItems(ItemType.KILL).get(0);
     killCount.put(killer);
 
-    // アイテム強奪
+    // アイテム強奪した
     List<ItemStack> dropItemList = event.getDrops();
     List<StatisticsItem> robberyItemList = getItems(ItemType.ROBBERY);
     for (StatisticsItem item : robberyItemList) {
       if (item instanceof CollectionItemStack) {
         CollectionItemStack robberyItem = (CollectionItemStack) item;
         robberyItem.put(killer, dropItemList);
+      }
+    }
+
+    // デスカウント
+    Player dead = event.getEntity();
+    DeathCount deathCount = (DeathCount) getItems(ItemType.DEATH).get(0);
+    deathCount.put(dead);
+
+    // アイテム強奪された
+    List<StatisticsItem> robbedItemList = getItems(ItemType.ROBBED);
+    for (StatisticsItem item : robbedItemList) {
+      if (item instanceof CollectionItemStack) {
+        CollectionItemStack robberyItem = (CollectionItemStack) item;
+        robberyItem.put(dead, dropItemList);
       }
     }
   }

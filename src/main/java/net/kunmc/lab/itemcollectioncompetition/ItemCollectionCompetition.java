@@ -24,12 +24,6 @@ public final class ItemCollectionCompetition extends JavaPlugin {
       builder.command(new Main("icc", new ConfigCommandBuilder(config).build()));
     });
 
-    //event
     getServer().getPluginManager().registerEvents(new BedLimiter(), this);
-  }
-
-  @Override
-  public void onDisable() {
-    // Plugin shutdown logic
   }
 }

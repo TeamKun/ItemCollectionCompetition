@@ -1,4 +1,4 @@
-package net.kunmc.lab.itemcollectioncompetition.statistics;
+package net.kunmc.lab.itemcollectioncompetition.game.statistics;
 
 import org.bukkit.entity.Player;
 

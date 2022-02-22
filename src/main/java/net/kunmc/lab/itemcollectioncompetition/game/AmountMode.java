@@ -19,6 +19,8 @@ public class AmountMode extends Game {
     // 勝敗判定
     ICCTeam topTeam = this.iccTeamList.getTopTeam();
 
+    this.executeSafetyArea();
+
     if (topTeam.currentAmount() >= ItemCollectionCompetition.config.targetAmount.value()) {
       Util.sendTitleAll(topTeam.name() + "の勝利!", "", 20, 60, 20);
       this.stop();

@@ -1,4 +1,4 @@
-package net.kunmc.lab.itemcollectioncompetition.statistics;
+package net.kunmc.lab.itemcollectioncompetition.game.statistics;
 
 import java.util.UUID;
 import org.bukkit.entity.Player;

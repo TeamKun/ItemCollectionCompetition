@@ -6,6 +6,7 @@ import net.kunmc.lab.itemcollectioncompetition.config.DisplayType.DisplayTypeEnu
 import net.kunmc.lab.itemcollectioncompetition.team.ICCTeam;
 import net.kunmc.lab.itemcollectioncompetition.team.ICCTeamList;
 import org.bukkit.Bukkit;
+import org.bukkit.GameMode;
 import org.bukkit.boss.BarColor;
 import org.bukkit.boss.BarStyle;
 import org.bukkit.boss.BossBar;
@@ -16,15 +17,29 @@ public class TimeAttackMode extends Game {
   double currentTick = 0;
   BossBar bossBar;
 
+  boolean isPausing;
+
   public TimeAttackMode(ICCTeamList iccTeamList) {
     super(iccTeamList);
     bossBar = Bukkit.createBossBar("", BarColor.GREEN, BarStyle.SOLID);
     bossBar.setVisible(true);
   }
 
+  void pause() {
+    this.isPausing = true;
+    this.iccTeamList.setGameMode(GameMode.ADVENTURE);
+  }
+
+  void restart() {
+    this.isPausing = false;
+    this.iccTeamList.setGameMode(GameMode.SURVIVAL);
+  }
+
   @Override
   public void run() {
-    progress();
+    if (!isPausing) {
+      progress();
+    }
 
     // 情報表示
     sendInfo();
@@ -33,6 +48,8 @@ public class TimeAttackMode extends Game {
         bossBar.addPlayer(player);
       }
     }
+
+    this.executeSafetyArea();
 
     // タイムアップ
     if (this.currentTick >= minutes(ItemCollectionCompetition.config.timeLimit.value())) {
@@ -54,8 +71,7 @@ public class TimeAttackMode extends Game {
 
   private void progress() {
     this.currentTick++;
-
-    Util.log("1");
+    
     double remainingSecond = (minutes(
         ItemCollectionCompetition.config.timeLimit.value()) - this.currentTick) / 20;
 
@@ -65,7 +81,6 @@ public class TimeAttackMode extends Game {
 
     String barTitle = "残り ";
 
-    Util.log("2");
     if (hour.length() == 1) {
       hour = "0".concat(hour);
     }
@@ -84,12 +99,15 @@ public class TimeAttackMode extends Game {
 
     barTitle = barTitle.concat(second);
 
+    if (isPausing) {
+      barTitle = "一時停止中 ".concat(barTitle);
+    }
+
     this.bossBar.setTitle(barTitle);
 
     double progress = 1 -
         (this.currentTick / minutes(ItemCollectionCompetition.config.timeLimit.value()));
 
-    Util.log(String.valueOf(progress));
     this.bossBar.setProgress(progress);
 
     if (progress < 0.2) {

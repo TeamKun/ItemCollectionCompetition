@@ -26,6 +26,8 @@ public class Config extends BaseConfig {
   public MaterialSetValue robberyTargetMaterials = new MaterialSetValue(Material.IRON_BLOCK,
       Material.IRON_INGOT, Material.IRON_ORE);
   public MaterialSetValue breakTargetMaterials = new MaterialSetValue(Material.IRON_ORE);
+  public MaterialSetValue robbedTargetMaterials = new MaterialSetValue(Material.IRON_BLOCK,
+      Material.IRON_INGOT, Material.IRON_ORE);
   public BooleanValue enableSafetyAreaParticle = new BooleanValue(true);
   public StringValue mode = new StringValue(Mode.TIME.modeName()).addAllowString(
           Mode.TIME.modeName())

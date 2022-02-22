@@ -4,7 +4,9 @@ import net.kunmc.lab.itemcollectioncompetition.ItemCollectionCompetition;
 import net.kunmc.lab.itemcollectioncompetition.config.DisplayType.DisplayTypeEnum;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
+import org.bukkit.GameMode;
 import org.bukkit.Location;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.block.Chest;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -67,6 +69,15 @@ public class ICCTeam implements Listener {
 
   public boolean isCompleteSetting() {
     return this.deliveryChest != null && this.respawnPoint != null;
+  }
+
+  public void setGameMode(GameMode gameMode) {
+    for (OfflinePlayer offlinePlayer : team.getPlayers()) {
+      if (offlinePlayer.isOnline()) {
+        Player player = (Player) offlinePlayer;
+        player.setGameMode(gameMode);
+      }
+    }
   }
 
   public void clearDeliveryChestInventory() {

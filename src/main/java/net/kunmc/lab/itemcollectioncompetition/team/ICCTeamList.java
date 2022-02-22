@@ -8,6 +8,7 @@ import net.kunmc.lab.itemcollectioncompetition.ItemCollectionCompetition;
 import net.kunmc.lab.itemcollectioncompetition.command.CommandResult;
 import net.kunmc.lab.itemcollectioncompetition.config.DisplayType.DisplayTypeEnum;
 import net.kyori.adventure.text.Component;
+import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.block.Chest;
 import org.bukkit.entity.Player;
@@ -126,6 +127,12 @@ public class ICCTeamList {
   public void clearSettings() {
     for (ICCTeam iccTeam : this.iccTeamList) {
       iccTeam.clearSettings();
+    }
+  }
+
+  public void setGameMode(GameMode gameMode) {
+    for (ICCTeam team : this.iccTeamList) {
+      team.setGameMode(gameMode);
     }
   }
 }
