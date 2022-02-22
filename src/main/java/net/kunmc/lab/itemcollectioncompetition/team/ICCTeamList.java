@@ -118,6 +118,20 @@ public class ICCTeamList {
     return topTeam;
   }
 
+  public boolean isDraw() {
+    int amount = -1;
+    for (ICCTeam iccTeam : this.iccTeamList) {
+      if (amount != -1) {
+        if (amount != iccTeam.currentAmount()) {
+          return false;
+        }
+      }
+      amount = iccTeam.currentAmount();
+    }
+
+    return true;
+  }
+
   public void clearDeliveryChestInventory() {
     for (ICCTeam iccTeam : this.iccTeamList) {
       iccTeam.clearDeliveryChestInventory();

@@ -53,6 +53,15 @@ public class TimeAttackMode extends Game {
 
     // タイムアップ
     if (this.currentTick >= minutes(ItemCollectionCompetition.config.timeLimit.value())) {
+
+      // 引き分け判定
+      if (this.iccTeamList.isDraw()) {
+        Util.sendTitleAll("引き分け", "", 20, 60, 20);
+        this.stop();
+        return;
+      }
+      
+      // 勝利判定
       ICCTeam topTeam = this.iccTeamList.getTopTeam();
       Util.sendTitleAll(topTeam.name() + "の勝利!", "", 20, 60, 20);
       this.stop();
