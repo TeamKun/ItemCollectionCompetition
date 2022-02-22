@@ -7,26 +7,31 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
+import java.util.UUID;
 import net.kunmc.lab.itemcollectioncompetition.ItemCollectionCompetition;
 import net.kunmc.lab.itemcollectioncompetition.Util;
 import net.kunmc.lab.itemcollectioncompetition.config.Config;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.block.Block;
 import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.inventory.CraftItemEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.scoreboard.Team;
 
 public class ICCStatistics implements Listener {
 
   List<StatisticsItem> items = new ArrayList<>();
+  private final UUID GAME_ID = UUID.randomUUID();
 
   public ICCStatistics() {
     Bukkit.getPluginManager().registerEvents(this, ItemCollectionCompetition.plugin);
@@ -97,12 +102,18 @@ public class ICCStatistics implements Listener {
   @EventHandler(ignoreCancelled = true)
   public void onBlockBreak(BlockBreakEvent event) {
     Player player = event.getPlayer();
+    Block block = event.getBlock();
+
+    // 設置されたブロックか判定
+    if (!block.getMetadata(this.GAME_ID.toString()).isEmpty()) {
+      return;
+    }
 
     List<StatisticsItem> blockBreakItemList = getItems(ItemType.BLOCK_BREAK);
     for (StatisticsItem item : blockBreakItemList) {
       if (item instanceof CollectionItemStack) {
         CollectionItemStack blockBreakItem = (CollectionItemStack) item;
-        blockBreakItem.put(player, event.getBlock());
+        blockBreakItem.put(player, block);
       }
     }
   }
@@ -229,5 +240,12 @@ public class ICCStatistics implements Listener {
       }
     }
     return size;
+  }
+
+  @EventHandler(ignoreCancelled = true)
+  public void onBlockPlace(BlockPlaceEvent event) {
+    Block block = event.getBlock();
+    block.setMetadata(this.GAME_ID.toString(),
+        new FixedMetadataValue(ItemCollectionCompetition.plugin, null));
   }
 }
