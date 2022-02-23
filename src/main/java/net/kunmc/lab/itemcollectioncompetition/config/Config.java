@@ -1,12 +1,12 @@
 package net.kunmc.lab.itemcollectioncompetition.config;
 
-import net.kunmc.lab.configlib.config.BaseConfig;
+import net.kunmc.lab.configlib.BaseConfig;
 import net.kunmc.lab.configlib.value.BooleanValue;
 import net.kunmc.lab.configlib.value.IntegerValue;
-import net.kunmc.lab.configlib.value.MaterialSetValue;
 import net.kunmc.lab.configlib.value.MaterialValue;
 import net.kunmc.lab.configlib.value.StringValue;
-import net.kunmc.lab.configlib.value.TeamSetValue;
+import net.kunmc.lab.configlib.value.collection.MaterialSetValue;
+import net.kunmc.lab.configlib.value.collection.TeamSetValue;
 import net.kunmc.lab.itemcollectioncompetition.config.DisplayType.DisplayTypeEnum;
 import net.kunmc.lab.itemcollectioncompetition.game.Mode;
 import org.bukkit.Material;
@@ -29,9 +29,10 @@ public class Config extends BaseConfig {
   public MaterialSetValue robbedTargetMaterials = new MaterialSetValue(Material.IRON_BLOCK,
       Material.IRON_INGOT, Material.IRON_ORE);
   public BooleanValue enableSafetyAreaParticle = new BooleanValue(true);
-  public StringValue mode = new StringValue(Mode.TIME.modeName()).addAllowString(
+  public StringValue mode = new StringValue(Mode.TIME.modeName()).addAllowableString(
           Mode.TIME.modeName())
-      .addAllowString(Mode.AMOUNT.modeName());
+      .addAllowableString(Mode.AMOUNT.modeName());
+
   public IntegerValue timeLimit = new IntegerValue(40);
 
   public Config(@NotNull Plugin plugin) {

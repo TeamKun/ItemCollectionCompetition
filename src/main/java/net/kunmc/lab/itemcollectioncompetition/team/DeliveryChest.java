@@ -34,12 +34,12 @@ public class DeliveryChest extends BukkitRunnable implements Listener {
         safetyAreaHalfRange.value(),
         safetyAreaUnderRange.value());
 
-    safetyAreaHalfRange.onSet((value, commandContext) -> {
+    safetyAreaHalfRange.onModify((value, commandContext) -> {
       this.safetyBorder = new SafetyBorder(this.chest.getLocation(), value,
           ItemCollectionCompetition.config.safetyAreaUnderRange.value());
     });
 
-    safetyAreaUnderRange.onSet((value, commandContext) -> {
+    safetyAreaUnderRange.onModify((value, commandContext) -> {
       this.safetyBorder = new SafetyBorder(this.chest.getLocation(),
           ItemCollectionCompetition.config.safetyAreaHalfRange.value(), value);
     });

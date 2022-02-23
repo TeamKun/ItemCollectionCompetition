@@ -1,7 +1,7 @@
 package net.kunmc.lab.itemcollectioncompetition;
 
 import dev.kotx.flylib.FlyLib;
-import net.kunmc.lab.configlib.command.ConfigCommandBuilder;
+import net.kunmc.lab.configlib.ConfigCommandBuilder;
 import net.kunmc.lab.itemcollectioncompetition.command.Main;
 import net.kunmc.lab.itemcollectioncompetition.config.Config;
 import net.kunmc.lab.itemcollectioncompetition.game.BedLimiter;
