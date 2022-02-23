@@ -5,9 +5,9 @@ import dev.kotx.flylib.command.CommandContext;
 import net.kunmc.lab.itemcollectioncompetition.game.GameManager;
 import org.jetbrains.annotations.NotNull;
 
-public class Restart extends Command {
+public class Resume extends Command {
 
-  public Restart(@NotNull String name) {
+  public Resume(@NotNull String name) {
     super(name);
   }
 

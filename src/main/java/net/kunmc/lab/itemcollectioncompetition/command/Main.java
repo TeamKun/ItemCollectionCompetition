@@ -14,7 +14,7 @@ public class Main extends Command {
         new SetRespawn("setRespawn"),
         new ClearSettings("clearSettings"),
         new Pause("pause"),
-        new Restart("restart"),
+        new Resume("resume"),
         configCommand);
   }
 }
